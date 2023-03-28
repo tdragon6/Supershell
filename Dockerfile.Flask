@@ -1,0 +1,10 @@
+FROM python:3.8-alpine
+
+WORKDIR /app
+
+COPY ./flask .
+
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories && \
+    apk update && \
+    apk -U --no-cache add gcc python3-dev libc-dev libffi-dev && \
+    pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple

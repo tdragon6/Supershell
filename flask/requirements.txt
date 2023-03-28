@@ -1,0 +1,7 @@
+gunicorn==20.1.0
+gevent==22.10.2
+paramiko==3.0.0
+PyJWT==2.6.0
+redis==4.5.1
+requests==2.22.0
+Flask==2.2.3

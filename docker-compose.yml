@@ -1,0 +1,108 @@
+version: '3'
+services:
+  nginx:
+    container_name: nginx
+    image: nginx:1.18-alpine
+    ports:
+      - 8888:80
+    privileged: true
+    volumes:
+      - ./static:/static
+      - ./volume/nginx/log:/var/log/nginx
+      - ./volume/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./volume/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - memfd
+    restart: always
+  flask:
+    container_name: flask
+    build:
+      context: .
+      dockerfile: Dockerfile.Flask
+    expose:
+      - 5000
+    privileged: true
+    volumes:
+      - ./const.py:/app/const.py
+      - ./config.py:/app/config.py
+      - ./volume/flask:/volume
+      - ./volume/rssh/cache:/cache
+      - ./volume/rssh/downloads:/downloads
+    depends_on:
+      - redis
+    command:
+      - sh
+      - -c
+      - |
+        sh -c "while ! nc -z redis 6379 ; do sleep 1 ; done"
+        python generate_key.py
+        gunicorn -c gunicorn.py main:app
+    restart: always
+  redis:
+    container_name: redis
+    image: redis:5.0.7-alpine
+    expose:
+      - 6379
+    privileged: true
+    volumes:
+      - ./volume/redis/redis.conf:/etc/redis/redis.conf
+      - ./volume/redis/data:/data
+      - ./volume/redis/log:/log
+    command: /usr/local/bin/redis-server /etc/redis/redis.conf
+    restart: always
+  rssh:
+    container_name: rssh
+    build:
+      context: ./rssh
+      dockerfile: Dockerfile
+    expose:
+      - 3232
+    ports:
+      - 3232:3232
+    privileged: true
+    volumes:
+      - ./volume/rssh:/data
+      - ./volume/flask/authorized_keys:/data/authorized_keys
+    depends_on:
+      - nginx
+    restart: always
+  shell:
+    container_name: shell
+    build:
+      context: .
+      dockerfile: Dockerfile.Ttyd
+    expose:
+      - 7681
+    privileged: true
+    volumes:
+      - ./volume/ttyd/ssh_config:/etc/ssh/ssh_config
+      - ./volume/flask/key:/root/.ssh
+    depends_on:
+      - flask
+    command:
+      - sh
+      - -c
+      - |
+        chmod +x ttyd
+        ./ttyd -i 0.0.0.0 -p 7681 -a -t titleFixed='Supershell - Shell' -t disableLeaveAlert=true ssh -J rssh:3232
+    restart: always
+  memfd:
+    container_name: memfd
+    build:
+      context: .
+      dockerfile: Dockerfile.Ttyd
+    expose:
+      - 7682
+    privileged: true
+    volumes:
+      - ./volume/ttyd/ssh_config:/etc/ssh/ssh_config
+      - ./volume/flask/key:/root/.ssh
+    depends_on:
+      - shell
+    command:
+      - sh
+      - -c
+      - |
+        chmod +x ttyd
+        ./ttyd -i 0.0.0.0 -p 7682 -a -t titleFixed='Supershell - Inject' -t disableLeaveAlert=true -t disableReconnect=true ssh -J rssh:3232
+    restart: always

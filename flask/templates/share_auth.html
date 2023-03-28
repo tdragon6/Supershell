@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>Supershell - 共享Shell</title>
+    <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon">
+    <link href="/static/css/tabler.min.css" rel="stylesheet"/>
+    <link href="/static/css/toastr.min.css" rel="stylesheet"/>
+    <style>
+      @import url('https://rsms.me/inter/inter.css');
+      :root {
+      	--tblr-font-sans-serif: 'Inter Var', -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+      }
+      body {
+      	font-feature-settings: "cv03", "cv04", "cv11";
+      }
+    </style>
+  </head>
+  <body  class=" d-flex flex-column">
+    <div class="page page-center">
+      <div class="container container-tight py-4">
+        <div class="text-center mb-4">
+          <a class="navbar-brand navbar-brand-autodark"><img src="/static/img/logo.svg" height="36" alt=""></a>
+        </div>
+        <div class="card card-md">
+          <div class="card-body">
+            <h2 class="h2 text-center mb-4">共享Shell</h2>
+            <div class="mb-2">
+              <div class="input-group input-group-flat">
+                <input id="share_password" type="password" class="form-control" placeholder="请输入共享密码" autocomplete="off">
+                <span class="input-group-text">
+                  <a id="share_password_icon" href="javascript:show_password();" class="link-secondary" data-bs-original-title="显示密码" data-bs-toggle="tooltip" data-bs-placement="top">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-eye" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                      <path d="M12 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+                      <path d="M22 12c-2.667 4.667 -6 7 -10 7s-7.333 -2.333 -10 -7c2.667 -4.667 6 -7 10 -7s7.333 2.333 10 7"></path>\
+                    </svg>
+                  </a>
+                </span>
+              </div>
+            </div>
+            <div class="form-footer">
+              <button class="btn btn-primary w-100" onclick="login('{{ sessid | safe }}');">确 定</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/toastr.min.js"></script>
+    <script src="/static/js/func/share_auth.js"></script>
+    <script>
+      // 设置提示框属性
+      toastr.options.positionClass = 'toast-top-center';
+      toastr.options.timeOut = 3000;
+      toastr.options.escapeHtml = true;
+    </script>
+    <script>
+      // 绑定键盘监听
+      login_enter_listen();
+    </script>
+  </body>
+</html>
