@@ -1,0 +1,26 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+    
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: docker login
+      env:
+        DOCKER_ACCESS_TOKEN: ${{secrets.DOCKER_ACCESS_TOKEN}}
+      run: | 
+        docker login -u reversessh -p $DOCKER_ACCESS_TOKEN
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag reversessh/reverse_ssh:$(date +%s) --tag reversessh/reverse_ssh
+      
+    - name: Docker Push
+      run: docker push reversessh/reverse_ssh
