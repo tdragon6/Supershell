@@ -84,10 +84,14 @@ openbsd/*
 
 ## Build
 
-1、Pull the source code and enter the project directory
+1、Download the latest release source code, unzip it and enter the project directory
 
 ```
-git clone https://github.com/tdragon6/Supershell.git
+wget https://github.com/tdragon6/Supershell/releases/download/latest/Supershell.tar.gz
+```
+
+```
+tar -zxvf Supershell.tar.gz
 ```
 
 ```

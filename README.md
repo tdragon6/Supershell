@@ -83,10 +83,14 @@ openbsd/*
 
 ## 快速构建
 
-1、拉取源码，进入项目目录
+1、下载最新release源码，解压后进入项目目录
 
 ```
-git clone https://github.com/tdragon6/Supershell.git
+wget https://github.com/tdragon6/Supershell/releases/download/latest/Supershell.tar.gz
+```
+
+```
+tar -zxvf Supershell.tar.gz
 ```
 
 ```
