@@ -42,3 +42,8 @@
 
 * [https://gitee.com/zhangxinxu/copy-text/tree/master](https://gitee.com/zhangxinxu/copy-text/tree/master)
 * [LICENSE](https://github.com/tdragon6/Supershell/tree/main/thirdparty_license/LICENSE.copy-text)
+
+## wait-for-it
+
+* [https://github.com/vishnubob/wait-for-it](https://github.com/vishnubob/wait-for-it)
+* [LICENSE](https://github.com/tdragon6/Supershell/tree/main/thirdparty_license/LICENSE.wait-for-it)
