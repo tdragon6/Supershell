@@ -3,7 +3,7 @@
 
 **2023-04-02**
 
-* 修复rssh版本获取BUG，因变动较小且不影响之前使用，不单独开新的release
+* 修复rssh版本获取BUG，因变动较小且不影响之前使用，不单独开新的release，release附件中已覆盖v1.0.0和latest的 `Supershell.tar.gz`
 
 **2023.03.28**
 
