@@ -34,7 +34,7 @@
 
 在常规渗透测试和比赛中，反弹shell时是否在为 `Ctrl + C` 意外关闭Shell而发愁？是否在为执行一些交互式脚本而苦恼？常规的反弹Shell往往只是命令的执行和结果的响应，这样的Shell通常缺少便利的功能，例如完全交互式访问、TAB补全、交互程序的执行和历史记录等功能。
 
-Supershell是一个集成了reverse_ssh服务的WEB管理平台，使用docker一键部署（[快速构建](#快速构建)），支持团队协作进行C2远程控制，通过在目标主机上建立反向SSH隧道，获取真正的完全交互式Shell，同时支持多平台架构的客户端Payload，客户端Payload的大小为几MB，可以理解为在目标主机上部署了一个几MB的ssh服务器，然后获取了一个ssh shell；Supershell集成了客户端管理、客户端Payload生成、交互式Shell、文件管理、文件服务器、内存注入、安装服务、迁移guid、本地原生sftp命令传输文件、本地ssh隧道端口转发和备忘录等功能。
+Supershell是一个集成了reverse_ssh服务的WEB管理平台，使用docker一键部署（[快速构建](#快速构建)），支持团队协作进行C2远程控制，通过在目标主机上建立反向SSH隧道，获取真正的完全交互式Shell，同时支持多平台架构的客户端Payload，客户端Payload的大小为几MB，可以理解为在目标主机上部署了一个几MB的ssh服务器，然后获取了一个ssh shell；Supershell集成了客户端管理、客户端Payload生成、交互式Shell、文件管理、文件服务器、内存注入、安装服务、迁移guid、客户端监听、本地原生sftp命令传输文件、本地ssh隧道端口转发和备忘录等功能。
 
 同时Supershell允许您将获取到的Shell分享给您的伙伴使用，Shell均通过浏览器页面嵌入，共享Shell采用单独的鉴权方式，无需给您的伙伴提供管理平台的身份认证凭证。
 
@@ -49,6 +49,8 @@ Supershell是一个集成了reverse_ssh服务的WEB管理平台，使用docker�
 * 支持文件管理
 * 支持内存注入，即文件不落地执行木马（内存马）
 * 支持Windows安装反弹Shell服务和Linux尝试迁移uid与gid
+* 支持客户端开启监听，实现内网链
+* 支持多种流量封装类型
 
 ## 支持平台
 
@@ -86,7 +88,7 @@ openbsd/*
 1、下载最新release源码，解压后进入项目目录
 
 ```
-wget https://github.com/tdragon6/Supershell/releases/download/latest/Supershell.tar.gz
+wget https://github.com/tdragon6/Supershell/releases/latest/download/Supershell.tar.gz
 ```
 
 ```
@@ -118,13 +120,19 @@ share_pwd = 'b7671f125bb2ed21d0476a00cfaa9ed6' # 明文密码 tdragon6 的md5
 share_expire = 24
 ```
 
-3、确保8888和3232端口没有占用（若占用，请修改docker-compose.yml文件nginx和rssh服务对外暴露端口），执行docker-compose命令
+3、设置公网地址环境变量，此步遗漏会影响一行命令上线功能
+
+```
+格式：export EXTERNAL_ADDRESS=<公网地址>:<rssh公网端口>
+```
+
+4、确保8888和3232端口没有占用（若占用，请修改docker-compose.yml文件nginx和rssh服务对外暴露端口），执行docker-compose命令
 
 ```
 docker-compose up -d
 ```
 
-4、访问管理平台，使用config.py配置的 `user` / `pwd` 登录
+5、访问管理平台，使用config.py配置的 `user` / `pwd` 登录
 
 ```
 http://公网IP:8888
@@ -144,38 +152,31 @@ http://公网IP:8888
 
 ## 部分功能演示
 
-**声明**：功能演示时的受害者主机采用[谜团靶场](https://mituan.zone/)，部署Supershell服务的VPS主机为临时申请使用，请不要尝试对演示中暴露的任何IP进行攻击，该VPS主机之前与之后的任何行为与本作者无关。
+**声明**：功能演示时的受害者主机采用[谜团靶场](https://mituan.zone/)和朋友的虚拟机，部署Supershell服务的VPS主机为临时申请使用，请不要尝试对演示中暴露的任何IP进行攻击，该VPS主机之前与之后的任何行为与本作者无关。
 
 ### 客户端生成
 
-<h1 align="center">
-  <img src="https://jsd.onmicrosoft.cn/gh/tdragon6/Supershell-oss@main/demo/compile.gif" alt="compile">
-</h1>
+![compile](https://github.com/tdragon6/Supershell-oss/blob/main/demo/compile.gif)
 
 ### Linux 反弹Shell
 
-<h1 align="center">
-  <img src="https://jsd.onmicrosoft.cn/gh/tdragon6/Supershell-oss@main/demo/linux_shell.gif" alt="linux_shell">
-</h1>
+![linux_shell](https://github.com/tdragon6/Supershell-oss/blob/main/demo/linux_shell.gif)
 
 ### Windows 反弹Shell
 
-<h1 align="center">
-  <img src="https://jsd.onmicrosoft.cn/gh/tdragon6/Supershell-oss@main/demo/win_shell.gif" alt="windows_shell">
-</h1>
+![windows_shell](https://github.com/tdragon6/Supershell-oss/blob/main/demo/windows_shell.gif)
 
 ### 文件管理
 
-<h1 align="center">
-  <img src="https://jsd.onmicrosoft.cn/gh/tdragon6/Supershell-oss@main/demo/file_manager.gif" alt="file_manager">
-</h1>
+![file_manager](https://github.com/tdragon6/Supershell-oss/blob/main/demo/file_manager.gif)
 
 ### 内存注入
 
 靶机不支持TCP反弹，这里使用本机演示，注入msf内存马
-<h1 align="center">
-  <img src="https://jsd.onmicrosoft.cn/gh/tdragon6/Supershell-oss@main/demo/memfd.gif" alt="memfd">
-</h1>
+![memefd](https://github.com/tdragon6/Supershell-oss/blob/main/demo/memfd.gif)
+
+### 内网监听链
+![listen](https://github.com/tdragon6/Supershell-oss/blob/main/demo/listen.gif)
 
 ## 免责声明
 
