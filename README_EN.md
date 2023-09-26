@@ -35,7 +35,7 @@
 
 In regular penetration tests and competitions, are you worried about `Ctrl + C` accidentally closing the shell when you bounce back? Are you struggling to execute some interactive scripts? Conventional rebound shells are often just the execution of commands and the response of results. Such shells usually lack convenient functions, such as full interactive access, TAB completion, interactive program execution and history records.
 
-Supershell is a WEB management platform that integrates the reverse_ssh service. It uses docker one-click deployment ([Build](#Build)) to support team collaboration for C2 remote control. By establishing a reverse SSH tunnel on the target host, get real The fully interactive Shell supports multi-platform client Payload at the same time. The size of the client Payload is a few MB, which can be understood as deploying a few MB ssh server on the target host, and then obtaining an ssh shell; Supershell integration Provides functions such as client management, client Payload generation, interactive shell, file management, file server, memory injection, installation service, migration guid, local native sftp command file transfer, local ssh tunnel port forwarding and memo.
+Supershell is a WEB management platform that integrates the reverse_ssh service. It uses docker one-click deployment ([Build](#Build)) to support team collaboration for C2 remote control. By establishing a reverse SSH tunnel on the target host, get real The fully interactive Shell supports multi-platform client Payload at the same time. The size of the client Payload is a few MB, which can be understood as deploying a few MB ssh server on the target host, and then obtaining an ssh shell; Supershell integration Provides functions such as client management, client Payload generation, interactive shell, file management, file server, memory injection, installation service, migration guid, client listening, local native sftp command file transfer, local ssh tunnel port forwarding and memo.
 
 At the same time, Supershell allows you to share the obtained Shell with your partners. The Shells are all embedded in the browser page. The shared Shell adopts a separate authentication method, and there is no need to provide your partners with the identity authentication credentials of the management platform.
 
@@ -50,6 +50,8 @@ At the same time, Supershell allows you to share the obtained Shell with your pa
 * Support file management
 * Support memory injection, that is, the file does not land and execute Trojan horse (memory horse)
 * Support Windows to install reverse Shell service and Linux to try to migrate uid and gid
+* Support client to enable monitoring and realize intranet chaining
+* Supports multiple traffic encapsulation types
 
 ## Platform
 
@@ -87,7 +89,7 @@ openbsd/*
 1、Download the latest release source code, unzip it and enter the project directory
 
 ```
-wget https://github.com/tdragon6/Supershell/releases/download/latest/Supershell.tar.gz
+wget https://github.com/tdragon6/Supershell/releases/latest/download/Supershell.tar.gz
 ```
 
 ```
@@ -118,14 +120,19 @@ share_pwd = 'b7671f125bb2ed21d0476a00cfaa9ed6' # 明文密码 tdragon6 的md5
 # Shared shell session hold time, unit: hour
 share_expire = 24
 ```
+3、Set the public network address environment variable. Omission of this step will affect the one-line command online function.
 
-3、Make sure that ports 8888 and 3232 are not occupied (if they are occupied, please modify the docker-compose.yml file nginx and rssh services to expose ports), and execute the docker-compose command
+```
+Format: export EXTERNAL_ADDRESS=<公网地址>:<rssh公网端口>
+```
+
+4、Make sure that ports 8888 and 3232 are not occupied (if they are occupied, please modify the docker-compose.yml file nginx and rssh services to expose ports), and execute the docker-compose command
 
 ```
 docker-compose up -d
 ```
 
-4、Access the management platform and log in with `user` / `pwd` configured in config.py
+5、Access the management platform and log in with `user` / `pwd` configured in config.py
 
 ```
 http://公网IP:8888
@@ -145,38 +152,30 @@ Read the following content before use to avoid some errors during use, or quickl
 
 ## Demo
 
-**Statement**: The victim host in the function demonstration uses [MiTuan Shooting Range](https://mituan.zone/), the VPS host where the Supershell service is deployed is for temporary application, please do not try to attack any IP exposed in the demonstration The author has nothing to do with any behavior of the VPS host before and after the attack.
+**Statement**: The victim host in the function demonstration uses [MiTuan Shooting Range](https://mituan.zone/) and friends’s virtual machine, the VPS host where the Supershell service is deployed is for temporary application, please do not try to attack any IP exposed in the demonstration The author has nothing to do with any behavior of the VPS host before and after the attack.
 
 ### Generate Client
 
-<h1 align="center">
-  <img src="https://jsd.onmicrosoft.cn/gh/tdragon6/Supershell-oss@main/demo/compile.gif" alt="compile">
-</h1>
+![compile](https://github.com/tdragon6/Supershell-oss/blob/main/demo/compile.gif)
 
 ### Linux Reverse Shell
 
-<h1 align="center">
-  <img src="https://jsd.onmicrosoft.cn/gh/tdragon6/Supershell-oss@main/demo/linux_shell.gif" alt="linux_shell">
-</h1>
+![linux_shell](https://github.com/tdragon6/Supershell-oss/blob/main/demo/linux_shell.gif)
 
 ### Windows Reverse Shell
 
-<h1 align="center">
-  <img src="https://jsd.onmicrosoft.cn/gh/tdragon6/Supershell-oss@main/demo/win_shell.gif" alt="windows_shell">
-</h1>
+![windows_shell](https://github.com/tdragon6/Supershell-oss/blob/main/demo/windows_shell.gif)
 
 ### File Management
 
-<h1 align="center">
-  <img src="https://jsd.onmicrosoft.cn/gh/tdragon6/Supershell-oss@main/demo/file_manager.gif" alt="file_manager">
-</h1>
+![file_manager](https://github.com/tdragon6/Supershell-oss/blob/main/demo/file_manager.gif)
 
 ### Memory Injection
 
-The shooting range does not support TCP bounce, here we use the local demonstration, inject msf memory horse
-<h1 align="center">
-  <img src="https://jsd.onmicrosoft.cn/gh/tdragon6/Supershell-oss@main/demo/memfd.gif" alt="memfd">
-</h1>
+![memefd](https://github.com/tdragon6/Supershell-oss/blob/main/demo/memfd.gif)
+
+### Intranet listening chain
+![listen](https://github.com/tdragon6/Supershell-oss/blob/main/demo/listen.gif)
 
 ## Disclaimer
 
