@@ -47,3 +47,7 @@
 
 * [https://github.com/vishnubob/wait-for-it](https://github.com/vishnubob/wait-for-it)
 * [LICENSE](https://github.com/tdragon6/Supershell/tree/main/thirdparty_license/LICENSE.wait-for-it)
+
+## DOMPurify
+* [https://github.com/cure53/DOMPurify](https://github.com/cure53/DOMPurify)
+* [LICENSE](https://github.com/tdragon6/Supershell/tree/main/thirdparty_license/LICENSE.DOMPurify)
