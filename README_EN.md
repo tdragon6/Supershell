@@ -164,7 +164,7 @@ Read the following content before use to avoid some errors during use, or quickl
 
 ### Windows Reverse Shell
 
-![windows_shell](https://github.com/tdragon6/Supershell-oss/blob/main/demo/windows_shell.gif)
+![windows_shell](https://github.com/tdragon6/Supershell-oss/blob/main/demo/win_shell.gif)
 
 ### File Management
 
