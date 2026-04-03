@@ -164,7 +164,7 @@ http://公网IP:8888
 
 ### Windows 反弹Shell
 
-![windows_shell](https://github.com/tdragon6/Supershell-oss/blob/main/demo/windows_shell.gif)
+![windows_shell](https://github.com/tdragon6/Supershell-oss/blob/main/demo/win_shell.gif)
 
 ### 文件管理
 
